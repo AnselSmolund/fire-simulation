@@ -8,7 +8,7 @@ float rx = 0, ry = 0, rz = 0, scale = 1;
 void setup(){
   size(800, 800, P3D);
   noStroke();
-  frameRate(24);
+  frameRate(30);
   logs = loadShape("fre005.obj");
   box = new Box();
  // smoke_texture = loadImage("https://www.freeiconspng.com/uploads/smoke-overlay-png-smoke-png-image-smokes-1.png");
@@ -21,7 +21,7 @@ void draw(){
   background(50); 
   lights();
   translate(width/2, height/2, 0);
-  fill(0);
+  fill(255);
   text(particles.size(),200,-200); 
   rotateX(rx);
   rotateY(ry);
@@ -35,12 +35,12 @@ void draw(){
   scale(5);
   translate(0,-150,0);
   if(flowing){
-    for(int i = 0; i < 40; i++){
-      if(particles.size() < 10000){
+    for(int i = 0; i < 500; i++){
+      if(particles.size() < 100000){
         float vx = 0;
         float vz = 0;
-        float posx = random(-40,40);
-        float posz = random(-30,30);
+        float posx = random(-50,55);
+        float posz = random(-40,40);
         if(posz < 0){
           vz = random(0.3,0.5);
         }
@@ -55,7 +55,7 @@ void draw(){
         }
         float vy = randomGaussian() * 0.3 - 1.0;
         PVector velocity = new PVector(vx,vy,vz);
-        particles.add(new Particle(new PVector(posx,85,posz),velocity));
+        particles.add(new Particle(new PVector(posx,120,posz),velocity));
       }
     }
   }
@@ -126,7 +126,7 @@ class Particle{
     mass = random(10);
     radius = mass / 3;
     location = new PVector(loc.x,loc.y,loc.z);
-    life = 255;
+    life = 200;
     sphere_arr = new PVector[total + 1][total + 1];
     g = 0;
     
@@ -141,36 +141,39 @@ class Particle{
     velocity.add(acceleration); 
     location.add(velocity);
    // acceleration.mult(0);
-    life-=2.5;
-    g+=2;
+    life-=1.5;
+    g+=1.5;
   }
   
   //This bit of code has been used from this program by Dan Shiffman
   //https://github.com/CodingTrain/website/blob/master/CodingChallenges/CC_025_SphereGeometry/Processing/CC_025_SphereGeometry/CC_025_SphereGeometry.pde
   void display(){
-   float r = radius;
-   for (int i = 0; i < total+1; i++) {
-    float lat = map(i, 0, total, 0, PI);
-    for (int j = 0; j < total+1; j++) {
-      float lon = map(j, 0, total, 0, TWO_PI);
-      float x = r * sin(lat) * cos(lon);
-      float y = r * sin(lat) * sin(lon);
-      float z = r * cos(lat);
-      sphere_arr[i][j] = new PVector(x, y, z);
-     }
-   }
-   for (int i = 0; i < total; i++) {
-    fill(255,g,0,life);
-    noStroke();
-    beginShape(TRIANGLE_STRIP);
-    for (int j = 0; j < total+1; j++) {
-      PVector v1 = sphere_arr[i][j];
-      vertex(v1.x + location.x, v1.y + location.y, v1.z + location.z);
-      PVector v2 = sphere_arr[i+1][j];
-      vertex(v2.x + location.x, v2.y + location.y, v2.z + location.z);
-      }
-     endShape();
-    }   
+    stroke(random(200,255),g,0,life);
+    strokeWeight(radius);
+    point(location.x,location.y,location.z);
+   //float r = radius;
+   //for (int i = 0; i < total+1; i++) {
+   // float lat = map(i, 0, total, 0, PI);
+   // for (int j = 0; j < total+1; j++) {
+   //   float lon = map(j, 0, total, 0, TWO_PI);
+   //   float x = r * sin(lat) * cos(lon);
+   //   float y = r * sin(lat) * sin(lon);
+   //   float z = r * cos(lat);
+   //   sphere_arr[i][j] = new PVector(x, y, z);
+   //  }
+   //}
+   //for (int i = 0; i < total; i++) {
+   // fill(255,g,0,life);
+   // noStroke();
+   // beginShape(TRIANGLE_STRIP);
+   // for (int j = 0; j < total+1; j++) {
+   //   PVector v1 = sphere_arr[i][j];
+   //   vertex(v1.x + location.x, v1.y + location.y, v1.z + location.z);
+   //   PVector v2 = sphere_arr[i+1][j];
+   //   vertex(v2.x + location.x, v2.y + location.y, v2.z + location.z);
+   //   }
+   //  endShape();
+   // }   
   }
   void checkEdges(){
     
@@ -218,6 +221,7 @@ class Box{
  
     beginShape(QUADS);
     stroke(255);
+    strokeWeight(1);
     noFill();
     vertex( 150, -150,  150, 0, 0); 
     vertex( 150, -150, -150, 150, 0); 
